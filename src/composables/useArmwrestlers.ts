@@ -7,7 +7,7 @@ export function useArmwrestlers() {
   const armwrestlers = ref<Armwrestler[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
-  const selectedId = ref<string | null>(null)
+  const selectedId = ref<number>(1)
 
   async function load(force = false) {
     if (loading.value) return
@@ -33,7 +33,7 @@ export function useArmwrestlers() {
 
   const selected = computed(() => armwrestlers.value.find(a => a.id === selectedId.value) || null)
 
-  function select(id: string) { selectedId.value = id }
+  function select(id: number) { selectedId.value = id }
 
   return { armwrestlers, loading, error, selected, selectedId, select, load }
 }

@@ -6,12 +6,15 @@ export interface ArmContact {
 }
 
 export interface Armwrestler {
-  id: string
+  id: number
   fullName: string
-  age?: number
+  birthYear?: number
   city?: string
   club?: string
+  weightKg?: number
+  weightKgRange?: string
   weightClass?: string
+  birthYearApproximate?: boolean
   contact?: ArmContact
   image?: string
 }

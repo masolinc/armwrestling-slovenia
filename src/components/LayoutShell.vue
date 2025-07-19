@@ -27,7 +27,10 @@
       />
 
       <main class="flex-1 ml-0 bg-white overflow-hidden">
-        <ArmwrestlerDetail :person="selected" />
+        <ArmwrestlerDetail
+          :person="selected"
+          :key="selectedId"
+        />
       </main>
     </div>
   </div>

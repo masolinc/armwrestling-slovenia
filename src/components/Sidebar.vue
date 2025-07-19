@@ -30,13 +30,13 @@
 </template>
 <script setup lang="ts">
 import type { Armwrestler } from '@/types/armwrestler'
-interface Props { armwrestlers: Armwrestler[]; selectedId: string | null; mobileOpen: boolean }
-interface Emits { (e:'select', id:string): void; (e:'close'): void }
+interface Props { armwrestlers: Armwrestler[]; selectedId: number; mobileOpen: boolean }
+interface Emits { (e:'select', id:number): void; (e:'close'): void }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
-function select(id: string) {
+function select(id: number) {
   emit('select', id)
   emit('close') 
 }
