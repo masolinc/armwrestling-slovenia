@@ -1,72 +1,127 @@
+<!-- ImageWithFade.vue -->
 <template>
-  <div class="relative overflow-hidden rounded-2xl circular-mask-wrapper">
+  <figure
+    class="relative overflow-hidden select-none bg-white group"
+    :class="variantClass"
+    :style="styleVars"
+  >
     <img
       :src="src"
       :alt="alt"
-      class="block w-full h-auto object-cover select-none circular-mask-img"
       loading="lazy"
       draggable="false"
-      :style="inlineVars"
+      class="block w-full h-auto object-cover transition-transform duration-700 ease-out will-change-transform"
+      :class="zoomClass"
     />
-  </div>
+
+    <!-- Keep existing white halo overlay (remove if not needed) -->
+    <div class="fade-overlay pointer-events-none absolute inset-0"></div>
+  </figure>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
+type Variant = 'halo-mid' | 'halo-soft' | 'halo-strong'
+
 interface Props {
   src: string
   alt?: string
-  /**
-   * Start of fade from center (0–1); lower = more of image visible.
-   */
-  visibleCore?: number
-  /**
-   * How soft the fade edge is (0–1 segment length from start to full fade).
-   * 0.15–0.25 typical.
-   */
-  fadePortion?: number
+  variant?: Variant
+  fadeWidthPx?: number
+  edgeStrength?: number
+  falloffFactor?: number
+  /** Scale factor on hover/focus */
+  hoverScale?: number
 }
+
 const props = withDefaults(defineProps<Props>(), {
-  visibleCore: 0.78,
-  fadePortion: 0.20
+  variant: 'halo-mid',
+  fadeWidthPx: 60,
+  edgeStrength: 0.95,
+  falloffFactor: 0.55,
+  hoverScale: 1.06
 })
 
-const endStop = Math.min(1, props.visibleCore + props.fadePortion)
+const styleVars = computed(() => ({
+  '--fade-width': props.fadeWidthPx + 'px',
+  '--edge-alpha': String(props.edgeStrength),
+  '--falloff': String(props.falloffFactor),
+  '--hover-scale': String(props.hoverScale)
+}))
 
-const inlineVars = {
-  '--core': props.visibleCore.toString(),
-  '--mid1': (props.visibleCore + props.fadePortion * 0.40).toString(),
-  '--mid2': (props.visibleCore + props.fadePortion * 0.70).toString(),
-  '--end': endStop.toString()
-}
+const variantClass = computed(() => {
+  switch (props.variant) {
+    case 'halo-soft': return 'variant-soft'
+    case 'halo-strong': return 'variant-strong'
+    default: return 'variant-mid'
+  }
+})
+
+const zoomClass = computed(
+  () => `group-hover:scale-[var(--hover-scale)] group-focus-visible:scale-[var(--hover-scale)]`
+)
 </script>
 
 <style scoped>
-.circular-mask-wrapper {
-  background: #fff; /* White "shadow" comes from showing background where mask fades out */
+figure {
   position: relative;
+  outline: none;
 }
 
-.circular-mask-img {
-  /*
-    Mask goes from opaque (center) to transparent (edge).
-    Transparent edge lets the parent's white show through = white halo.
-  */
-  -webkit-mask-image:
-    radial-gradient(circle closest-side at 50% 50%,
-      rgba(0,0,0,1) 0%,
-      rgba(0,0,0,1) calc(var(--core) * 100%),
-      rgba(0,0,0,0.75) calc(var(--mid1) * 100%),
-      rgba(0,0,0,0.35) calc(var(--mid2) * 100%),
-      rgba(0,0,0,0) calc(var(--end) * 100%));
-  mask-image:
-    radial-gradient(circle closest-side at 50% 50%,
-      rgba(0,0,0,1) 0%,
-      rgba(0,0,0,1) calc(var(--core) * 100%),
-      rgba(0,0,0,0.75) calc(var(--mid1) * 100%),
-      rgba(0,0,0,0.35) calc(var(--mid2) * 100%),
-      rgba(0,0,0,0) calc(var(--end) * 100%));
-  /* ensure smooth scaling if you ever animate */
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+/* Zoom handled by utility classes; fallback (if dynamic class not applied) */
+figure:hover img,
+figure:focus-visible img {
+  transform: scale(var(--hover-scale, 1.06));
+}
+
+/* White halo overlay (same as your earlier version) */
+.fade-overlay {
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 0 0,
+      rgba(255,255,255,var(--edge-alpha)) 0%,
+      rgba(255,255,255, calc(var(--edge-alpha)*0.75)) calc(var(--fade-width)*0.35),
+      rgba(255,255,255,0) calc(var(--fade-width))) top left / 50% 50% no-repeat,
+    radial-gradient(circle at 100% 0,
+      rgba(255,255,255,var(--edge-alpha)) 0%,
+      rgba(255,255,255, calc(var(--edge-alpha)*0.75)) calc(var(--fade-width)*0.35),
+      rgba(255,255,255,0) calc(var(--fade-width))) top right / 50% 50% no-repeat,
+    radial-gradient(circle at 100% 100%,
+      rgba(255,255,255,var(--edge-alpha)) 0%,
+      rgba(255,255,255, calc(var(--edge-alpha)*0.75)) calc(var(--fade-width)*0.35),
+      rgba(255,255,255,0) calc(var(--fade-width))) bottom right / 50% 50% no-repeat,
+    radial-gradient(circle at 0 100%,
+      rgba(255,255,255,var(--edge-alpha)) 0%,
+      rgba(255,255,255, calc(var(--edge-alpha)*0.75)) calc(var(--fade-width)*0.35),
+      rgba(255,255,255,0) calc(var(--fade-width))) bottom left / 50% 50% no-repeat,
+    linear-gradient(to right,
+      rgba(255,255,255,var(--edge-alpha)) 0%,
+      rgba(255,255,255,0) calc(var(--fade-width)*1.05),
+      rgba(255,255,255,0) calc(100% - var(--fade-width)*1.05),
+      rgba(255,255,255,var(--edge-alpha)) 100%),
+    linear-gradient(to bottom,
+      rgba(255,255,255,var(--edge-alpha)) 0%,
+      rgba(255,255,255,0) calc(var(--fade-width)*1.05),
+      rgba(255,255,255,0) calc(100% - var(--fade-width)*1.05),
+      rgba(255,255,255,var(--edge-alpha)) 100%);
+  pointer-events: none;
+}
+
+/* Variant tweaks */
+.variant-soft .fade-overlay {
+  --edge-alpha: calc(var(--edge-alpha)*0.65);
+  --fade-width: calc(var(--fade-width)*1.4);
+}
+.variant-strong .fade-overlay {
+  --edge-alpha: calc(min(1, var(--edge-alpha)*1.2));
+  --fade-width: calc(var(--fade-width)*0.75);
+}
+
+/* Image performance hints */
+figure img {
+  will-change: transform;
+  transform-origin: 50% 50%;
+  backface-visibility: hidden;
 }
 </style>

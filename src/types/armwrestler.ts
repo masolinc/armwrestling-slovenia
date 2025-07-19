@@ -3,6 +3,7 @@ export interface ArmContact {
   instagram?: string
   facebook?: string
   email?: string
+  address?: string
 }
 
 export interface Armwrestler {
@@ -13,8 +14,8 @@ export interface Armwrestler {
   club?: string
   weightKg?: number
   weightKgRange?: string
+  heightCm?: string
   weightClass?: string
-  birthYearApproximate?: boolean
   contact?: ArmContact
   image?: string
 }

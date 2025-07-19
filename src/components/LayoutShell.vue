@@ -1,3 +1,4 @@
+<!-- LayoutShell.vue -->
 <template>
   <div class="h-screen flex flex-col bg-white">
     <!-- Mobile Top Bar -->
@@ -26,11 +27,24 @@
         @close="mobileOpen = false"
       />
 
-      <main class="flex-1 ml-0 bg-white overflow-hidden">
-        <ArmwrestlerDetail
-          :person="selected"
-          :key="selectedId"
-        />
+      <main class="flex-1 ml-0 bg-white overflow-hidden relative">
+        <!-- Cross-fade transition -->
+        <Transition
+          name="detail-fade"
+          mode="out-in"
+          appear
+        >
+          <ArmwrestlerDetail
+            v-if="selected"
+            :key="selectedId"
+            :person="selected"
+          />
+          <div
+            v-else
+            key="placeholder"
+            class="p-10 text-neutral-500"
+          >Select an athlete…</div>
+        </Transition>
       </main>
     </div>
   </div>
@@ -50,3 +64,33 @@ onMounted(() => {
   load()
 })
 </script>
+
+<style scoped>
+/* Fade + slight upward motion */
+.detail-fade-enter-active,
+.detail-fade-leave-active {
+  transition:
+    opacity 420ms cubic-bezier(.4,.15,.1,1),
+    transform 420ms cubic-bezier(.4,.15,.1,1);
+  will-change: opacity, transform;
+  position: relative;
+}
+
+.detail-fade-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.detail-fade-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.detail-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+.detail-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+</style>
