@@ -1,0 +1,32 @@
+[
+  {
+    "id": "matej-zidaric",
+    "fullName": "Matej Zidarič",
+    "age": 32,
+    "city": "Ormož",
+    "club": "Armwrestling klub Maribor",
+    "weightClass": "95 - 105 kg",
+    "contact": {
+      "phone": "+38670246303",
+      "instagram": "matejzidaric",
+      "facebook": "matej zidaric",
+      "email": "zidaric.matej93@gmail.com"
+    },
+    "image": "matej-zidaric.png"
+  },
+  {
+    "id": "ales-hozjan",
+    "fullName": "Aleš Hozjan",
+    "age": 35,
+    "city": "Tolmin",
+    "club": "Friuli Armwrestling",
+    "weightClass": "140 kg",
+    "contact": {
+      "phone": "+38640300489",
+      "instagram": "ales90ilovica",
+      "facebook": "Aleš Hozjan",
+      "email": "ales.hozjan90@gmail.com"
+    },
+    "image": "ales-hozjan.jpg"
+  }
+]
