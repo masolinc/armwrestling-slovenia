@@ -1,7 +1,11 @@
 import { ref, computed } from 'vue'
 import type { Armwrestler } from '@/types/armwrestler'
 
-const dataUrl = '/data/armwrestlers.json'
+// Dinamični base (vedno se konča z '/')
+const base = import.meta.env.BASE_URL
+
+// Ne začenjaj z '/', ker base že vsebuje trailing slash
+const dataUrl = `${base}data/armwrestlers.json`
 
 export function useArmwrestlers() {
   const armwrestlers = ref<Armwrestler[]>([])
@@ -15,10 +19,10 @@ export function useArmwrestlers() {
     loading.value = true
     error.value = null
     try {
-      // Cache bust query param (timestamp)
-      const res = await fetch(`${dataUrl}?t=${Date.now()}`, { cache: 'no-store' })
+      const url = `${dataUrl}?t=${Date.now()}`
+      const res = await fetch(url, { cache: 'no-store' })
       if (!res.ok) throw new Error(`Failed to load JSON: ${res.status}`)
-      const json = await res.json()
+      const json: Armwrestler[] = await res.json()
       armwrestlers.value = json
       if (!selectedId.value && armwrestlers.value.length) {
         selectedId.value = armwrestlers.value[0].id
@@ -31,9 +35,13 @@ export function useArmwrestlers() {
     }
   }
 
-  const selected = computed(() => armwrestlers.value.find(a => a.id === selectedId.value) || null)
+  const selected = computed(
+    () => armwrestlers.value.find(a => a.id === selectedId.value) || null
+  )
 
-  function select(id: number) { selectedId.value = id }
+  function select(id: number) {
+    selectedId.value = id
+  }
 
   return { armwrestlers, loading, error, selected, selectedId, select, load }
 }

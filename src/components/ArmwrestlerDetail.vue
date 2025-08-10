@@ -77,7 +77,7 @@
               {{ person.contact.facebook }}
             </li>
             <li v-if="person.contact?.email">
-              <span class="font-semibold">Email :</span>
+              <span class="font-semibold">Email: </span>
               <a
                 class="underline break-all hover:text-neutral-700"
                 :href="`mailto:${person.contact.email}`"
@@ -104,7 +104,9 @@ import { computed } from 'vue'
 interface Props { person: Armwrestler | null }
 const props = defineProps<Props>()
 
+const base = import.meta.env.BASE_URL
+
 const imageUrl = computed(() =>
-  props.person?.image ? `/images/${props.person.image}` : null
+  props.person?.image ? `${base}images/${props.person.image}` : null
 )
 </script>
