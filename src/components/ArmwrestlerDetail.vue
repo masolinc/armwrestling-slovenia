@@ -1,4 +1,3 @@
-<!-- PersonDetail.vue -->
 <template>
   <div v-if="person" class="min-h-full flex">
     <div class="flex flex-col justify-center w-full px-6 py-6">
@@ -93,7 +92,7 @@
     </div>
   </div>
 
-  <div v-else class="p-10 text-neutral-500">Select an athlete…</div>
+  <div v-else class="p-10 text-neutral-500">Izberi regijo in tekmovalca…</div>
 </template>
 
 <script setup lang="ts">

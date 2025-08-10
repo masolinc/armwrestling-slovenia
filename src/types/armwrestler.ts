@@ -9,6 +9,7 @@ export interface ArmContact {
 export interface Armwrestler {
   id: number
   fullName: string
+  region?: string
   birthYear?: number
   city?: string
   club?: string
